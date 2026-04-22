@@ -1,0 +1,218 @@
+@import url('https://fonts.googleapis.com/css2?family=Chivo+Mono:ital,wght@0,100..900;1,100..900&display=swap');
+
+@import "tailwindcss";
+
+/* ─── CUSTOM PROPERTIES ─────────────────────────────────────── */
+:root {
+  --bg: #000000;
+  --text: #F2EFEB;
+  --text-dim: rgba(242, 239, 235, 0.45);
+  --font: 'Chivo Mono', monospace;
+}
+
+/* ─── RESET ──────────────────────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto; /* Lenis handles scrolling */
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── CUSTOM CURSOR — DESKTOP ONLY ──────────────────────────────
+   On desktop (fine pointer = mouse), hide the system cursor on
+   every element without exception. The custom Cursor component
+   renders in its place.
+
+   On mobile/tablet (coarse pointer = touch/stylus), we do NOT
+   set cursor:none — native tap behaviour must remain fully intact
+   for smooth interactions, scroll, and navigation.
+─────────────────────────────────────────────────────────────────  */
+@media (pointer: fine) {
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
+  }
+
+  /* Belt-and-suspenders: explicitly kill cursor on every interactive
+     element type that browsers might override with their own value  */
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  label,
+  summary,
+  [role="button"],
+  [role="link"],
+  [role="checkbox"],
+  [role="radio"],
+  [role="switch"],
+  [role="tab"],
+  [role="option"],
+  [role="menuitem"],
+  [tabindex],
+  [draggable],
+  [data-cursor-hover] {
+    cursor: none !important;
+  }
+}
+
+/* ─── SCROLLBAR ──────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(242, 239, 235, 0.25);
+}
+
+/* ─── SELECTION ──────────────────────────────────────────────── */
+::selection {
+  background: var(--text);
+  color: var(--bg);
+}
+
+/* ─── LOADER ─────────────────────────────────────────────────── */
+.loader-root {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Flip card mechanics */
+.flip-card {
+  position: relative;
+  width: 220px;
+  height: 260px;
+  perspective: 800px;
+}
+
+.flip-digit {
+  font-family: var(--font);
+  font-size: clamp(120px, 18vw, 220px);
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  user-select: none;
+}
+
+.flip-top,
+.flip-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.flip-top {
+  top: 0;
+  align-items: flex-end;
+  clip-path: inset(0 0 0 0);
+}
+
+.flip-bottom {
+  bottom: 0;
+  align-items: flex-start;
+  clip-path: inset(0 0 0 0);
+}
+
+.flip-top .flip-digit {
+  transform: translateY(50%);
+}
+
+.flip-bottom .flip-digit {
+  transform: translateY(-50%);
+}
+
+/* centre rule between top/bottom */
+.flip-divider {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(242,239,235,0.12);
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+/* ─── GRAIN / NOISE OVERLAY (shared keyframe) ───────────────── */
+@keyframes grain-shift {
+  0%   { transform: translate(0, 0); }
+  10%  { transform: translate(-2%, -3%); }
+  20%  { transform: translate(3%, 1%); }
+  30%  { transform: translate(-1%, 4%); }
+  40%  { transform: translate(4%, -2%); }
+  50%  { transform: translate(-3%, 3%); }
+  60%  { transform: translate(2%, -4%); }
+  70%  { transform: translate(-4%, 1%); }
+  80%  { transform: translate(1%, -1%); }
+  90%  { transform: translate(-2%, 4%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Grain shared rules */
+.hero-grain,
+.global-grain {
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-grain::before,
+.global-grain::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  animation: grain-shift 0.65s steps(1) infinite;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  background-repeat: repeat;
+}
+
+.hero-grain::before  { opacity: 0.055; }
+.global-grain::before { opacity: 0.03; }
+
+/* Global grain fixed layer via body */
+body::after {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 9998;
+  animation: grain-shift 0.65s steps(1) infinite;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  background-repeat: repeat;
+}
