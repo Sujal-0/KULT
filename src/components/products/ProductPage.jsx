@@ -64,16 +64,18 @@ export default function ProductPage({ gender, onBack, onProductSelect }) {
     : 0
 
   /* Horizontal padding inside the carousel container (matches header padding) */
-  const PADDING_H = winW < 768 ? 40 : 96
+  const PADDING_H = winW < 768 ? 0 : 96
   const availW    = winW - sidebarW - PADDING_H
 
-  /* Card width — fills available space evenly per visibleCount */
+  /* Card width — fills available space evenly per visibleCount.
+     On mobile (visibleCount===1) the card is exactly the full viewport
+     width so no neighbouring card ever peeks in.                      */
   const CARD_W =
     visibleCount === 3
       ? Math.max(Math.floor((availW - 2 * GAP) / 3), 200)
       : visibleCount === 2
         ? Math.max(Math.floor((availW - GAP) / 2), 180)
-        : Math.min(Math.round(availW * 0.88), 340)
+        : winW   /* mobile: full viewport width — 1 card = 1 screen */
 
   /* Image height — fixed heights so cards never overflow the viewport */
   const IMG_H = visibleCount === 1 ? 250 : visibleCount === 2 ? 300 : 320
@@ -430,9 +432,11 @@ export default function ProductPage({ gender, onBack, onProductSelect }) {
             align-items: center !important;
             justify-content: center !important;
             padding: 0 !important;
+            overflow: hidden !important;
           }
           .product-page-carousel-viewport {
-            width: auto !important;
+            width: 100vw !important;   /* clip to exactly one card — no peek */
+            overflow: hidden !important;
           }
         }
       `}</style>

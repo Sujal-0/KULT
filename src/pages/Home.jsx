@@ -86,7 +86,7 @@ function AppInner() {
     pendingScroll.current = null
     const timer = setTimeout(() => scrollToId(targetId), ENTER_MS)
     return () => clearTimeout(timer)
-  }, [activePage, activeProduct, showCart])    // eslint-disable-line
+  }, [activePage, activeProduct, showCart, showComingSoon])    // eslint-disable-line
 
   /* ────────────────────────────────────────────────────────────
      NAVIGATION ACTIONS
@@ -135,6 +135,7 @@ function AppInner() {
   const navigateTo = (targetId) => {
     if (onSubPage) {
       pendingScroll.current = targetId   // will fire after main re-mounts
+      setShowComingSoon(false)           // close Coming Soon if open
       setShowCart(false)
       setActiveProduct(null)
       setActivePage(null)

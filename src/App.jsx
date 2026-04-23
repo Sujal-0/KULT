@@ -6,8 +6,12 @@ import Loader  from './components/loader/Loader'
 import Cursor  from './components/cursor/Cursor'
 import Home    from './pages/Home'
 
+/* ── Has this session already seen the loader? ── */
+const SESSION_KEY = 'kult_loader_seen'
+
 export default function App() {
-  const [loaded, setLoaded] = useState(false)
+  // Skip loader if already seen in this browser session (reload-safe)
+  const [loaded, setLoaded] = useState(() => sessionStorage.getItem(SESSION_KEY) === '1')
   const lenisRef = useRef(null)
 
   /* ── Init Lenis smooth scroll after loader exits ── */
@@ -44,7 +48,10 @@ export default function App() {
       {/* Loader — unmounts when done */}
       <AnimatePresence mode="wait">
         {!loaded && (
-          <Loader key="loader" onComplete={() => setLoaded(true)} />
+          <Loader key="loader" onComplete={() => {
+            sessionStorage.setItem(SESSION_KEY, '1')
+            setLoaded(true)
+          }} />
         )}
       </AnimatePresence>
 

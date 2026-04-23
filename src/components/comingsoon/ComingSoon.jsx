@@ -6,11 +6,14 @@ const EASE_IN  = [0.76, 0, 0.24, 1]
 
 /* ── Dense grain (matches the rest of the site) ── */
 const GRAIN_STYLE = {
-  position      : 'fixed',
-  inset         : 0,
+  position      : 'absolute',
+  inset         : '-10%',
+  width         : '120%',
+  height        : '120%',
   opacity       : 0.12,
   pointerEvents : 'none',
   zIndex        : 0,
+  willChange    : 'transform',
   backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
   backgroundSize: '150px 150px',
   animation     : 'grain-shift 0.55s steps(1) infinite',
@@ -30,11 +33,12 @@ export default function ComingSoon() {
       style={{
         position  : 'relative',
         background: '#030303',
-        minHeight : '100svh',
+        height    : '100svh',
         display   : 'flex',
         flexDirection: 'column',
         overflow  : 'hidden',
         fontFamily: 'var(--font)',
+        willChange: 'transform',
       }}
     >
       {/* Grain */}
